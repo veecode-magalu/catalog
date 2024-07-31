@@ -1,0 +1,54 @@
+app:
+  title: Devportal
+  baseUrl: http://localhost:3000
+permission:
+  enabled: false
+integrations:
+  github:
+    - host: github.com
+      apiBaseUrl: https://api.github.com/
+      token: xxxxxx
+scaffolder:
+  defaultAuthor:
+    name: M.C. Hammer # Defaults to `Scaffolder`
+    email: hammer@donthurtem.com # Defaults to `scaffolder@backstage.io`
+  defaultCommitMessage: "U can't touch this" # Defaults to 'Initial commit'
+auth:
+  environment: development
+  providers:
+    guest:
+      dangerouslyDisableDefaultAuthPolicy: true
+backend:
+  baseUrl: http://localhost:3000
+  listen:
+    port: 3000
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+  cache:
+    store: memory
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: MY-OWN-TOKEN
+          subject: admin-curl-access
+organization:
+  name: Devportal
+techdocs:
+  builder: "local" # Alternatives - 'external'
+  generator:
+    runIn: "local"
+  publisher:
+    type: "local" # Alternatives - 'googleGcs' or 'awsS3' or 'azureBlobStorage' or 'openStackSwift'. Read documentation for using alternatives.
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+  rules:
+    - allow: [Component, System, API, Resource, Location, Template]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: /opt/template/template.yaml
+

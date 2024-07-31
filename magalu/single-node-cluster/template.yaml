@@ -1,0 +1,105 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: single-node-cluster
+  title: Magalu Single-Node Kubernetes Cluster
+  description: VM Template with k3d
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - platform-templates
+    - magalu
+    - github
+spec:
+  owner: veecode/platform
+  type: devops
+  parameters:
+    - title: Project Configuration
+      required:
+        - componentId
+        - owner
+      properties:
+        componentId:
+          title: Name
+          type: string
+          description: Unique name of the component
+          pattern: '^([a-z0-9]|[.]|[_]|[-])*$'
+          ui:field: EntityNamePicker
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this component is for.
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component (Devportal)
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: [Group]
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          description: Choose a location to create the cluster IaC project
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - veecode-magalu
+        visibility:
+          title: Repository visibility
+          type: string
+          enum:
+            - public
+            - private
+          enumNames:
+            - 'Public'
+            - 'Private'
+          default: private
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          componentId: ${{ parameters.componentId }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          repoUrl: ${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
+          host: ${{ (parameters.repoUrl | parseRepoUrl).host }}
+    - id: log-output
+      name: Log Fetch Output
+      action: debug:log
+      input:
+        message: 'Fetched template path: ${{ steps.template.output.path }}'    
+    # - id: publish
+    #   name: Publish
+    #   action: publish:github
+    #   input:
+    #     allowedHosts:
+    #       - github.com
+    #     description: Magalu Cluster ${{ parameters.componentId }}
+    #     repoUrl: ${{ parameters.repoUrl }}
+    #     repoVisibility: ${{ parameters.visibility }}
+    #     defaultBranch: main
+    #     protectDefaultBranch: false
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

@@ -1,0 +1,16 @@
+#
+# WORKFLOW PARA EDICAO E TESTES DE SKAFFOLDING
+#
+services:
+  backstage:
+    image: andrevtg/devportal-bundle:magalu
+    #image: backstage
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./.compose/app-config.minimal.yaml:/app/app-config.minimal.yaml
+      - ./magalu/single-node-cluster:/opt/template
+      #- /tmp:/tmp
+    command: ["node", "packages/backend", "--config", "app-config.minimal.yaml"]
