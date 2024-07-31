@@ -74,22 +74,17 @@ spec:
           owner: ${{ parameters.owner }}
           repoUrl: ${{ (parameters.repoUrl | parseRepoUrl).owner }}/${{ (parameters.repoUrl | parseRepoUrl).repo }}
           host: ${{ (parameters.repoUrl | parseRepoUrl).host }}
-    - id: log-output
-      name: Log Fetch Output
-      action: debug:log
+    - id: publish
+      name: Publish
+      action: publish:github
       input:
-        message: 'Fetched template path: ${{ steps.template.output.path }}'    
-    # - id: publish
-    #   name: Publish
-    #   action: publish:github
-    #   input:
-    #     allowedHosts:
-    #       - github.com
-    #     description: Magalu Cluster ${{ parameters.componentId }}
-    #     repoUrl: ${{ parameters.repoUrl }}
-    #     repoVisibility: ${{ parameters.visibility }}
-    #     defaultBranch: main
-    #     protectDefaultBranch: false
+        allowedHosts:
+          - github.com
+        description: Magalu Cluster ${{ parameters.componentId }}
+        repoUrl: ${{ parameters.repoUrl }}
+        repoVisibility: ${{ parameters.visibility }}
+        defaultBranch: main
+        protectDefaultBranch: false
     - id: register
       name: Register
       action: catalog:register
