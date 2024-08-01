@@ -1,12 +1,8 @@
-# ${{ values.componentId }}
+# Magalu cluster "single node"
 
-## Description
+## Descrição
 
-${{ values.description }}
-
-## Deploying the project
-
-Este é um template de projeto IaC para cluster single-node de Kubernetes rodando sobre uma VM simples na Magalu Cloud. Seu propósito é servir como "sandbox" para experimentos de times.
+Este é um template de projeto IaC para cluster single-node de Kubernetes rodando sobre uma VM simples na Magalu Cloud. Seu propósito é servir como "sandbox" descartável para experimentos de times.
 
 Características deste cluster:
 
