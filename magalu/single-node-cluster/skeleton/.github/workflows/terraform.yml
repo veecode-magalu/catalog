@@ -20,7 +20,7 @@ jobs:
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.9.3
-        cli_config_credentials_token: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+        cli_config_credentials_token: ${{'${{'}} secrets.TERRAFORM_CLOUD_TOKEN ${{'}}'}}
 
     - name: Terraform Init
       run: terraform init
